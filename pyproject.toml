@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retail-data-warehouse"
+version = "0.1.0"
+description = "A small PostgreSQL retail star schema and repeatable loader"
+requires-python = ">=3.11"
+dependencies = ["pandas>=2.2,<3", "psycopg[binary]>=3.2,<4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9", "pytest-cov>=6,<7"]
+
+[project.scripts]
+generate-warehouse-data = "retail_warehouse.generator:main"
+load-retail-warehouse = "retail_warehouse.loader:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["integration: requires TEST_DATABASE_URL pointing to PostgreSQL"]
+

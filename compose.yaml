@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-retail_dw}
+      POSTGRES_USER: ${POSTGRES_USER:-warehouse_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+    volumes:
+      - warehouse_data:/var/lib/postgresql/data
+      - ./sql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql/02_views.sql:/docker-entrypoint-initdb.d/02_views.sql:ro
+
+volumes:
+  warehouse_data:
+
